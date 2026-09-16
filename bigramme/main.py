@@ -17,7 +17,7 @@ itos = lambda i: vocab[i]
 encode = lambda s: [stoi(c) for c in s]
 decode = lambda i: ''.join([itos(j) for j in i])
 
-# data = torch.tensor(encode(text), dtype=torch.long)
+data = torch.tensor(encode(text), dtype=torch.long)
 # stop = math.floor(len(text) * 0.9)
 # train = torch.tensor(encode(text[:stop]), dtype=torch.long)
 # val = torch.tensor(encode(text[stop:]), dtype=torch.long)
@@ -59,7 +59,7 @@ count = torch.load('count.pt', weights_only=True)
 # torch.save(count, 'count.pt')
 
 # soft = torch.softmax(count, dim=-1)
-count += 1
+# count += 1
 prob = count / count.sum(dim=1, keepdim=True)
 top = torch.topk(prob[stoi("q")], k=5, dim=-1)
 idx = top.indices
@@ -73,6 +73,6 @@ for i in range(0, 300):
     new_id = torch.multinomial(last_prob, 1)
     ids.append(new_id.item())
 print(''.join(decode(ids)))
-x = ids[:-1]
-y = ids[1:]
-print(prob[x, y].shape)
+x = data[:-1]
+y = data[1:]
+print(-torch.log(prob[x, y]).mean().item())
